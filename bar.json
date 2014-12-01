@@ -1,4 +1,8 @@
 {
+  "inputs": [
+    {"name": "count", "type": ["numeric","string"], "required": true},
+    {"name": "group", "type": ["string"], "required": false}
+  ],
   "axes": [
     {
       "type": "x",
@@ -15,7 +19,7 @@
       }
     }
   ],
-  "height": 200,
+  "height": 600,
   "marks": [
     {
       "from": {
@@ -81,5 +85,5 @@
       "range": "height"
     }
   ],
-  "width": 400
+  "width": 600
 }
