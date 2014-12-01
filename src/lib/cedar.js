@@ -3,6 +3,7 @@ var Cedar = Cedar || {}
 
 
 Cedar.query = function(params) {
+  var self = this;
   options = {
     where: "1=1",
     returnGeometry: false,
@@ -20,28 +21,20 @@ Cedar.query = function(params) {
     options.outStatistics = JSON.stringify([
       {"statisticType": "sum", "onStatisticField": params.count, "outStatisticFieldName": params.count + "_SUM"}]);
   }
-  return params.url + "/query?" + Cedar.serialize(options);
+  var dataUrl = params.url + "/query?" + self.serialize(options);
+  console.log('Data url: ' + dataUrl);
+  return dataUrl;
 }
 Cedar._agolData = "http://arcgis.com/sharing/rest/content/items/{item}/data?f=json"
 
 Cedar.chart = function(params) {
   var self = this;
-
-  //parse style
-  var style;
-  if(params.style.indexOf("http") > -1) {
-    style = params.style;
-  } else if(params.style.match(/^[a-f0-9]{32}$/)) {
-    style = Cedar._agolData.supplant({item: params.style});
-  } else {
-    style = params.style + ".json"
-  }
-
-  //fetch style
-  d3.json(style, function(spec) {
-    self.styleJson = spec;
+  //defer to the helper to fetch the style
+  self.fetchStyle(params.style, function(spec){
+    //now generate
     self.generate(params);
-  });
+  })
+
 }
 
 
@@ -53,10 +46,13 @@ Cedar.generate = function(params){
   Cedar.parse(params.el, JSON.parse(chart));
 };
 
-
-Cedar.fetchStyle = function(styleParam, cb){
-  var self = this;
-   //parse style
+/**
+ * Get the url of the style
+ * Abstracted so we can use angular to
+ * get the json via promises which is
+ * nicer than callbackery
+ */
+Cedar.getStyleUrl = function(styleParam){
   var style;
   if(styleParam.indexOf("http") > -1) {
     style = styleParam;
@@ -66,9 +62,19 @@ Cedar.fetchStyle = function(styleParam, cb){
     //look for a file
     style = styleParam + ".json"
   }
+  return style;
+}
+
+Cedar.fetchStyle = function(styleParam, cb){
+  var self = this;
+   //parse style
+  var style = self.getStyleUrl(styleParam);
 
   //fetch style
-  d3.json(style, function(spec) {
+  d3.json(style, function(err,spec) {
+    if(err){
+      console.error('Error loading ' + style + ' ' + err.message);
+    }
     self.styleJson = spec;
     cb(spec);
   });
@@ -86,7 +92,7 @@ Cedar.setStyle = function(json){
  */
 Cedar.parse = function(el, spec) {
   vg.parse.spec(spec, function(chart) { 
-    console.log(el, spec); 
+    //console.log(el, spec); 
     chart({el: el}).update(); 
   });
 }
@@ -102,10 +108,14 @@ String.prototype.supplant = function (o) {
 };
 
 Cedar.serialize = function(obj) {
+  console.log('in serialize');
   var str = [];
-  for(var p in obj)
+  for(var p in obj){
     if (obj.hasOwnProperty(p)) {
       str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
     }
-  return str.join("&");
-}
+  }
+  var queryString = str.join("&");
+  console.log('Query String ' + queryString);
+  return queryString;
+};

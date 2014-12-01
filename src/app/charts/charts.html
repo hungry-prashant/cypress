@@ -5,32 +5,65 @@
     <div class="row">
       <div class="col-lg-4 col-sm-6 col-md-4" >
         <div class="form-group">
-          <label >Data</label>
+          <h3 >Chart Data <small>Url to Feature Layer</small></h3>
           <input type="text" class="form-control" placeholder="Data Url" ng-model="model.data.url">
+          <!-- <div class="input-group">
+          <input type="text" class="form-control" placeholder="Data Url" ng-model="model.data.url">
+            <span class="input-group-btn">
+             <button class="btn btn-success" type="button" ng-click="fetchFields(model)">Fetch!</button>
+            </span>
+          </div> -->
         </div>
 
         <div class="form-group">
-          <label >Style Item Id</label>
-          <div class="input-group">
+          <h3>Chart Style <small>(name, url, or ago id)</small></h3>
+          <input type="text" class="form-control" ng-model="model.style" placeholder="Style Url">
+          <!-- <div class="input-group">
             <input type="text" class="form-control" ng-model="model.style" placeholder="Style Url">
             <span class="input-group-btn">
               <button class="btn btn-success" type="button" ng-click="fetchStyle(model)">Fetch!</button>
             </span>
-          </div><!-- /input-group -->
+          </div>/input-group -->
+        </div>
+
+        <div class="form-group">
+          <button class="btn btn-success btn-block" type="button" ng-click="setupEditor(model)">Setup Editor</button>
+        </div>
+        <div class="form-group">
+          <div ng-repeat="input in model.data.inputs">
+            <div ng-if="input.type[0] !== 'option'">
+              <label>{{input.name}} <small>{{input.type.join(',')}} </small></label>
+              <select class="form-control" ng-model="model.params[input.name]" ng-options="field.name for field in model.data.fields" ></select>
+            </div>
+            <div ng-if="input.type[0] === 'option'">
+              <label>{{input.name}} <small>{{input.type.join(',')}} </small></label>
+              <select class="form-control" ng-model="model.params[input.name]" >
+                <option id="sum">sum</option>
+                <option id="avg">avg</option>
+              </select>
+            </div>
+
+          </div>
+        </div>
+        <div class="form-group" >
           <label for="">Style Json</label>
           <textarea  ng-model="model.styleJson" class="form-control" rows="20"></textarea>
         </div>
-        <button class="btn btn-primary" 
+
+        <button class="btn btn-primary  btn-block" 
                 ng-click="updateChart(model)"
                 ng-disabled="!canRender()">Render Chart</button>
       </div>
       <div class="col-lg-8">
-        <div id="chart-area"></div>
+        <h3>Chart View</h3>
+        <div id="chart-area">
+          
+        </div>
       </div>
       
     </div>
 
-    <div class="row" ng-show="false">
+    <div class="row" ng-hide="true">
       <div class="col-lg-4">
         <button class="btn green">Save to Online</button>
       </div> 

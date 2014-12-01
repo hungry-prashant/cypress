@@ -103,8 +103,14 @@ gulp.task('misc', function () {
     .pipe($.size());
 });
 
+gulp.task('json', function () {
+  return gulp.src('src/**/*.json')
+    .pipe(gulp.dest('dist'))
+    .pipe($.size());
+});
+
 gulp.task('clean', function (done) {
   $.del(['.tmp', 'dist'], done);
 });
 
-gulp.task('build', ['html', 'images', 'fonts', 'misc']);
+gulp.task('build', ['html', 'images', 'fonts', 'misc', 'json']);

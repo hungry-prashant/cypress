@@ -1,6 +1,11 @@
 {
-  "width": 200,
-  "height": 200,
+  "inputs":[
+    {"name":"x","type":["numeric"], "required":true},
+    {"name":"y","type":["numeric"], "required":true},
+    {"name":"color","type":["string"], "required":true}
+  ],
+  "width": 450,
+  "height": 500,
   "data": [
     {
       "name": "iris",
