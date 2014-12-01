@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('cypress', ['ngAnimate', 'ngCookies', 'ngSanitize', 'ui.router'])
+angular.module('cypress', ['ngAnimate', 'ngCookies', 'ngSanitize', 'ui.router', 'ui.bootstrap'])
   .config(function ($stateProvider, $urlRouterProvider) {
     $stateProvider
       .state('home', {
