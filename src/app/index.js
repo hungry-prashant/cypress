@@ -7,8 +7,14 @@ angular.module('cypress', ['ngAnimate', 'ngCookies', 'ngSanitize', 'ui.router'])
         url: '/',
         templateUrl: 'app/main/main.html',
         controller: 'MainCtrl'
+      })
+      .state('charts', {
+        url: '/charts',
+        templateUrl: 'app/charts/charts.html',
+        controller: 'ChartsCtrl'
       });
 
     $urlRouterProvider.otherwise('/');
   })
+  
 ;
